@@ -8,7 +8,7 @@
 <h1>Login</h1>
 <?php
 
-$file =  './users/users.txt';
+$file =  '\xampp\htdocs\users\users.txt';
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
