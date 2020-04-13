@@ -2,72 +2,80 @@
 <html lang="en">
 
 <head>
-    <meta charset="utf-8">
-    <title>Register</title>
-    <style type="text/css" media="screen">
-        .error {
-            color: red;
-        }
-    </style>
+	<meta charset="utf-8">
+	<title>Register</title>
+	<style type="text/css" media="screen">
+		.error {
+			color: red;
+		}
+	</style>
 </head>
 
 <body>
-    <h1>Register</h1>
-    <?php
+	<h1>Register</h1>
+	<?php // Script 11.6 - register2.php
+	/* This script registers a user by storing their information in a text file and creating a directory for them. */
 
-    $dir = '../users/';
-    $file = $dir . 'users.txt';
+	// Identify the directory and file to use:
+	$dir = '\xampp\htdocs\users';
+	$file = $dir . '\users.txt';
 
-    if ($_SERVER['REQUEST_METHOD'] == 'POST') { // Handle the form.
+	if ($_SERVER['REQUEST_METHOD'] == 'POST') { // Handle the form.
 
-        $problem = FALSE; // No problems so far.
+		$problem = FALSE; // No problems so far.
 
-        if (empty($_POST['username'])) {
-            $problem = TRUE;
-            print '<p class="error">Please enter a username!</p>';
-        }
+		// Check for each value...
+		if (empty($_POST['username'])) {
+			$problem = TRUE;
+			print '<p class="error">Please enter a username!</p>';
+		}
 
-        if (empty($_POST['password1'])) {
-            $problem = TRUE;
-            print '<p class="error">Please enter a password!</p>';
-        }
+		if (empty($_POST['password1'])) {
+			$problem = TRUE;
+			print '<p class="error">Please enter a password!</p>';
+		}
 
-        if ($_POST['password1'] != $_POST['password2']) {
-            $problem = TRUE;
-            print '<p class="error">Your password did not match your confirmed password!</p>';
-        }
+		if ($_POST['password1'] != $_POST['password2']) {
+			$problem = TRUE;
+			print '<p class="error">Your password did not match your confirmed password!</p>';
+		}
 
-        if (!$problem) {
+		if (!$problem) { // If there weren't any problems...
 
-            if (is_writable($file)) {
+			if (is_writable($file)) { // Open the file.
 
-                $subdir = time() . rand(0, 4596);
-                $data = $_POST['username'] . "\t" . sha1(trim($_POST['password1'])) . "\t" . $subdir . PHP_EOL;
+				// Create the data to be written:
+				$subdir = time() . rand(0, 4596);
+				$data = $_POST['username'] . "\t" . sha1(trim($_POST['password1'])) . "\t" . $subdir . PHP_EOL;
 
-                file_put_contents($file, $data, FILE_APPEND | LOCK_EX);
+				// Write the data:
+				file_put_contents($file, $data, FILE_APPEND | LOCK_EX);
 
-                mkdir($dir . $subdir);
+				// Create the directory:
+				mkdir($dir . $subdir);
 
-                print '<p>You are now registered!</p>';
-            } else {
-                print '<p class="error">You could not be registered due to a system error.</p>';
-            }
-        } else {
-            print '<p class="error">Please go back and try again!</p>';
-        }
-    } else {
+				// Print a message:
+				print '<p>You are now registered!</p>';
+			} else { // Couldn't write to the file.
+				print '<p class="error">You could not be registered due to a system error.</p>';
+			}
+		} else { // Forgot a field.
+			print '<p class="error">Please go back and try again!</p>';
+		}
+	} else { // Display the form.
 
-    ?>
+		// Leave PHP and display the form:
+	?>
 
-        <form action="register.php" method="post">
-            <p>Username: <input type="text" name="username" size="20"></p>
-            <p>Password: <input type="password" name="password1" size="20"></p>
-            <p>Confirm Password: <input type="password" name="password2" size="20"></p>
-            <input type="submit" name="submit" value="Register">
-        </form>
+		<form action="register2.php" method="post">
+			<p>Username: <input type="text" name="username" size="20"></p>
+			<p>Password: <input type="password" name="password1" size="20"></p>
+			<p>Confirm Password: <input type="password" name="password2" size="20"></p>
+			<input type="submit" name="submit" value="Register">
+		</form>
 
-    <?php } // End of submission IF. 
-    ?>
+	<?php } // End of submission IF. 
+	?>
 </body>
 
 </html>
